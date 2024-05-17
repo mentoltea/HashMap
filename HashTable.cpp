@@ -19,19 +19,25 @@ HashTable::~HashTable() = default;
 
 
 void HashTable::insert(const KeyType &key, const ValueType &value) {
+    size_t hash, index;
     if (getLoadFactor() >= 0.75) {
         std::cout << "Increasing!" << std::endl;
         tabletype temp = table;
         _capacity *= 2;
+        _filled = 0;
         table = tabletype(_capacity);
         for (auto vit = temp.begin(); vit!=temp.end(); vit++) {
-            for (auto lit = (*vit).begin(); lit != (*vit).end(); lit++) {
-                insert(lit->first, lit->second);
+            for (auto lit = vit->begin(); lit != vit->end(); lit++) {
+                hash = hash_function(lit->first);
+                index = index_from_hash(hash);
+                if (table[index].empty()) _filled++;
+                table[index].push_back(std::make_pair(lit->first, lit->second));
             }
         }
     }
-    size_t hash = hash_function(key);
-    size_t index = index_from_hash(hash); // maybe some other way to convert hash to index
+    
+    hash = hash_function(key);
+    index = index_from_hash(hash); // maybe some other way to convert hash to index
     
     for (auto lit = table[index].begin(); lit != table[index].end(); lit++) {
         if (lit->first == key) {
@@ -76,7 +82,6 @@ ValueType& HashTable::operator[](const KeyType &key) {
     }
     //maybe warn that no such element
     ValueType value;
-    //std::memset(&value, 0, sizeof(ValueType));
     insert(key, value);
     index = index_from_hash(hash);
     return table[index].back().second;
@@ -101,46 +106,44 @@ size_t HashTable::hash_function(const KeyType &key) const {
     size_t delta = 0;
     size_t temp;
     if (size>sizeof(size_t)){
-    while (size > 0) {
-        if (delta!=sizeof(size_t)) {
-            switch (delta%3)
-            {
-            case 0:
-                hash<<3;
-                break;
-            case 1:
-                hash>>1;
-                hash++;
-                break;
-            case 2:
+        while (size > 0) {
+            if (delta!=sizeof(size_t)) {
+                switch (delta%3)
+                {
+                case 0:
+                    hash<<3;
+                    break;
+                case 1:
+                    hash>>1;
+                    hash++;
+                    break;
+                case 2:
+                    temp = hash;
+                    hash<<5;
+                    temp /= delta;
+                    hash *= (delta+2);
+                    temp<<2; hash>>2;
+                    hash = temp+hash-1;
+                default:
+                    break;
+                }
+            } else {
                 temp = hash;
-                hash<<5;
-                temp /= delta;
-                hash *= (delta+2);
-                temp<<2; hash>>2;
-                hash = temp+hash-1;
-            default:
-                break;
+                temp << 3;
+                temp /= (delta-1);
+                temp >> 2;
+                hash >> 3;
+                hash *= (delta*delta);
+                hash--;
+                hash = temp+hash;
             }
-        } else {
-            temp = hash;
-            temp << 3;
-            temp /= (delta-1);
-            temp >> 2;
-            hash >> 3;
-            hash *= (delta*delta);
-            hash--;
-            hash = temp+hash;
+            hash += (*ptr)*(hash ? hash : 1) ;
+            size--; delta++;
+            ptr++;
         }
-        hash += (*ptr)*(hash ? hash : 1) ;
-        size--; delta++;
-        ptr++;
-    }
-    }
-    else {
+    } else {
         std::memcpy(&hash, ptr, size);
     }
-    //std::cout << key << " " << hash << std::endl;
     return hash;
 }
 

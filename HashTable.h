@@ -8,8 +8,8 @@
 #include <exception>
 #include <cstring>
 
-using KeyType = int64_t;
-using ValueType = int;
+using KeyType = std::string;
+using ValueType = std::string;
 
 typedef std::vector<std::list<std::pair<KeyType, ValueType>>> tabletype;
 
@@ -35,7 +35,7 @@ public:
     double getLoadFactor() const;
 
     size_t maxChainLen() const;
-private:
+//private:
     int32_t _capacity;  //!< Вместимость хеш-таблицы
     int32_t _filled;    //!< Текущее количество занятых ячеек хеш-таблицы
 

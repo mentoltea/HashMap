@@ -3,19 +3,33 @@
 
 using namespace std;
 int main() {
-    HashTable table(1000);
-    int num = 1000;
-    for (int i=0; i<num; i++) {
-        table[i] = i;
+    HashTable table(5);
+
+    vector<string> vec = {
+        "three two one",
+        "asdb",
+        "0oerp",
+        ".",
+        "~~~`",
+        "/]/equal",
+        "sd",
+        "/n\t",
+        "  *space*  ",
+        "one two three",
+        "123091239 3"
+    };
+    cout << table.table.size() << endl;
+    for (auto it=vec.begin(); it!=vec.end(); it++) {
+        table.insert(*it, *it);
     }
-    cout << table.getLoadFactor() << endl;
-    cout << table.maxChainLen() << endl << endl;
-    
-    for (int i=0; i<num; i++) {
-        if (table[i] != i) cout << i << " " << table[i] << endl;
+    cout << table.table.size() << endl;
+
+    cout << table.maxChainLen() << endl;
+    cout << table.getLoadFactor()  << endl<< endl;
+
+    for (auto it=vec.begin(); it!=vec.end(); it++) {
+        if (!table.find(*it, *it)) cout << *it  << " = " << table[*it] << endl;
     }
-    
-    
 
     return 0;
 }
