@@ -18,18 +18,16 @@ int main() {
         "one two three",
         "123091239 3"
     };
-    cout << table.table.size() << endl;
-    for (auto it=vec.begin(); it!=vec.end(); it++) {
-        table.insert(*it, *it);
+
+    for (int i = 0; i < vec.size(); i++) {
+        table[vec[i]] = i;
     }
-    cout << table.table.size() << endl;
 
     cout << table.maxChainLen() << endl;
     cout << table.getLoadFactor()  << endl<< endl;
 
-    for (auto it=vec.begin(); it!=vec.end(); it++) {
-        if (!table.find(*it, *it)) cout << *it  << " = " << table[*it] << endl;
+    for (int i = 0; i < vec.size(); i++) {
+        if (table[vec[i]] != i) cout << vec[i] << " problem" << endl;
     }
-
     return 0;
 }

@@ -9,9 +9,9 @@
 #include <cstring>
 
 using KeyType = std::string;
-using ValueType = std::string;
+using ValueType = int;
 
-typedef std::vector<std::list<std::pair<KeyType, ValueType>>> tabletype;
+typedef std::vector<std::list<std::pair<KeyType, ValueType> > > tabletype;
 
 class HashTable 
 {
@@ -25,7 +25,8 @@ public:
     //! Если при вставке обнаруживается, что LoadFactor таблицы превышает 0.75, то таблица расширяется в 2 раза.
     void insert(const KeyType &key, const ValueType &value);
     //! Поиск элемента в хеш таблице
-    bool find(const KeyType &key, ValueType &value) const;
+    bool find(const KeyType &key, const ValueType &value) const;
+    bool exist(const KeyType &key) const;
     //! Удаление элемента из хеш-таблицы
     void remove(const KeyType &key);
     //! Получение элемента по ключу
@@ -35,6 +36,8 @@ public:
     double getLoadFactor() const;
 
     size_t maxChainLen() const;
+
+    void print() const;
 //private:
     int32_t _capacity;  //!< Вместимость хеш-таблицы
     int32_t _filled;    //!< Текущее количество занятых ячеек хеш-таблицы
@@ -43,6 +46,6 @@ public:
     tabletype table;
     //! Хеш-функция
 
-    size_t hash_function(const KeyType &key) const; 
+    static size_t hash_function(const KeyType &key); 
     size_t index_from_hash(size_t hash) const;
 };
