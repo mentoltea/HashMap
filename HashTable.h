@@ -9,7 +9,7 @@
 #include <cstring>
 
 using KeyType = std::string;
-using ValueType = int;
+using ValueType = double;
 
 typedef std::vector<std::list<std::pair<KeyType, ValueType> > > tabletype;
 
@@ -38,7 +38,7 @@ public:
     size_t maxChainLen() const;
 
     void print() const;
-//private:
+private:
     int32_t _capacity;  //!< Вместимость хеш-таблицы
     int32_t _filled;    //!< Текущее количество занятых ячеек хеш-таблицы
 
