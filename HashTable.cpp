@@ -11,7 +11,7 @@ size_t pow(int base, size_t power) {
 HashTable::HashTable(size_t size) noexcept {
     if (!size) size=100;
     _capacity = size;
-    _filled = 0;
+    _filled = 0; _size = 0;
     table = tabletype(size);
 }
 
@@ -24,7 +24,7 @@ void HashTable::insert(const KeyType &key, const ValueType &value) {
         std::cout << "Increasing!" << std::endl;
         tabletype temp = table;
         _capacity = _capacity*2;
-        _filled = 0;
+        _filled = 0; _size = 0;
         table = tabletype(_capacity);
         for (auto vit = temp.begin(); vit!=temp.end(); vit++) {
             for (auto lit = vit->begin(); lit != vit->end(); lit++) {
@@ -46,14 +46,16 @@ void HashTable::insert(const KeyType &key, const ValueType &value) {
         }
     }
     if (table[index].empty()) _filled++;
+    _size++;
     table[index].push_back(std::make_pair(key, value));
 }
 
-bool HashTable::find(const KeyType &key, const ValueType &value) const {
+bool HashTable::find(const KeyType &key, ValueType &value) const {
     size_t hash = hash_function(key);
     size_t index = index_from_hash(hash);
     for (auto lit = table[index].begin(); lit != table[index].end(); lit++) {
-        if (lit->first == key && lit->second == value) {
+        if (lit->first == key) {
+            value = lit->second;
             return true;
         }
     }
@@ -77,7 +79,8 @@ void HashTable::remove(const KeyType &key) {
     for (auto lit = table[index].begin(); lit != table[index].end(); lit++) {
         if (lit->first == key) {
             table[index].erase(lit);
-            _filled--;
+            if (table[index].empty()) _filled--;
+            _size--;
             return;
         }
     }
@@ -99,8 +102,8 @@ ValueType& HashTable::operator[](const KeyType &key) {
     return table[index].back().second;
 }
 
-double HashTable::getLoadFactor() const {
-    return (double)_filled/_capacity;
+double HashTable::getLoadFactor() {
+    return (double)_size/_capacity;
 }
 
 size_t HashTable::index_from_hash(size_t hash) const {

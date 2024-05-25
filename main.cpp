@@ -25,9 +25,11 @@ int main() {
 
     cout << table.maxChainLen() << endl;
     cout << table.getLoadFactor()  << endl<< endl;
-
+    //table.remove(vec[7]);
+    double d;
     for (int i = 0; i < vec.size(); i++) {
-        if (table[vec[i]] != i) cout << vec[i] << " problem" << endl;
+        d = i;
+        if (!table.find(vec[i], d)) cout << vec[i] << " problem " << i << endl;
     }
     return 0;
 }
