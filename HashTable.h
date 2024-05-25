@@ -33,7 +33,7 @@ public:
     ValueType& operator[](const KeyType &key);
 
     //! Загрузка хеш-таблицы. Считается как отношение количества занятых ячеек к вместимости хеш-таблицы.
-    double getLoadFactor();
+    double getLoadFactor() const;
 
     size_t maxChainLen() const;
 

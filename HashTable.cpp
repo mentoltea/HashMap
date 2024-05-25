@@ -29,10 +29,6 @@ void HashTable::insert(const KeyType &key, const ValueType &value) {
         for (auto vit = temp.begin(); vit!=temp.end(); vit++) {
             for (auto lit = vit->begin(); lit != vit->end(); lit++) {
                 insert(lit->first, lit->second);
-                // hash = hash_function(lit->first);
-                // index = index_from_hash(hash);
-                // if (table[index].empty()) _filled++;
-                // table[index].push_back(std::make_pair(lit->first, lit->second));
             }
         }
     }
@@ -102,8 +98,8 @@ ValueType& HashTable::operator[](const KeyType &key) {
     return table[index].back().second;
 }
 
-double HashTable::getLoadFactor() {
-    return (double)_size/_capacity;
+double HashTable::getLoadFactor() const {
+    return (double)_filled/_capacity;
 }
 
 size_t HashTable::index_from_hash(size_t hash) const {
